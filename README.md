@@ -1,6 +1,6 @@
 # sys-admin-notes
 
-Various notes and sketches for guides that I have made while doing sys-amdin tasks. As they were for my personal use they are in various states of refinement.  Hopefully there is enough present to be useful. 
+In the document directory find various notes that I have made while doing sys-amdin tasks. As they were for my personal use they are in various states of refinement.  Hopefully there is enough present to be useful. 
 
 These are .odt or .docx files done with LibreOffice.  At stome point I will have to unify the style template.  Right now the only thing they have in common is that code is in a monospaced font.
 
