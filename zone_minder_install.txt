@@ -1,0 +1,65 @@
+
+1. Rediculously complicated,  not at all like the install section of the documents says.  The docs point to a README in
+/usr/share/doc/zoneminder-common/ .. and the README files (yes that is plural) explain how to do the install.
+
+2. > mysql_secure_installation  must been run as root, despite what the directions say.
+
+3. Note they have us disable SELINUX in /etc/selinux/config.  The ap authors say they don't have time to config it, and
+that it is a moving target.
+
+4. when starting the httpd (Apache webserver) deamon:
+  Apr 29 04:23:01 Turbine httpd[85613]: AH00526: Syntax error on line 101 of /etc/httpd/conf.d/ssl.conf:
+  Apr 29 04:23:01 Turbine httpd[85613]: SSLCertificateFile: file '/etc/pki/tls/certs/localhost.crt' does not exist or is empty
+
+  I moved /etc/httpd/conf.d/ssl.conf  to ../former_ssl.conf
+
+--->
+
+    at step 6 they had us do:
+      sudo dnf install mod_ssl  ; if you did this, then sudo dnf remove mod_ssl
+
+    but our local server does not have a registered domain name, so can't generate a registered certificate for it.
+
+    edit the zoneminder.httpd.conf file and comment out the three 'SSLRequireSSL' tags.  Also commnet out the URL rewriting,
+    as it redirects HTTP to HTTPS
+
+
+
+5. I skipped step 9 of README.httpd for configuring the firewall so that zoneminder could be read from other machines. It is on Turbine.
+
+6. Here is a guy who installed zoneminder on live chat, took him about 6 hours. Nice video, ran into about everything someone can do wrong ..
+https://www.youtube.com/watch?v=wYlhVRxZ2u0
+
+7. after following the directions it is not working ...
+
+8. the zoneminder.httpd.conf points /zm at /usr/share/zoneminder/www which has index.php,  perhaps php is not installed?
+
+
+changed httpd.conf:
+Listen 80
+to
+Listen 127.0.0.1:80
+
+ServerName 127.0.0.1:80
+
+
+--> php a problem?  -- don't think it was...
+
+  dnf -y install php php-cli php-php-gettext php-mbstring php-mcrypt php-mysqlnd php-pear php-curl php-gd php-xml php-bcmath php-zip
+
+  woops, should have run php first from the command line, it was already installed:
+  Package php-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-cli-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-mbstring-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-mysqlnd-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-common-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-gd-7.4.16-1.fc33.x86_64 is already installed.
+  Package php-xml-7.4.16-1.fc33.x86_64 is already installed.
+
+  note: https://computingforgeeks.com/how-to-install-lamp-stack-on-fedora/
+
+  # create PHPInfo test page
+  [root@www ~]# echo '<?php phpinfo(); ?>' > /var/www/html/info.php
+  chown root:apache /var/www/html/info.php
+  -rw-r-----. 1 root root 20 Apr 29 05:25 /var/www/html/info.php
+  browsing  http://localhost/info.php  now works well
